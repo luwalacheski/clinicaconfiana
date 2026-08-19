@@ -3,112 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clínica Confiança | Odontologia</title>
+    <title>Sorriso Perfeito | Login</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         :root { --primary: #0ea5e9; --text: #334155; --white: #ffffff; --success: #22c55e; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background-color: #f8fafc; color: var(--text); }
-
-        header { background: var(--white); padding: 1.5rem 10%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        .logo { font-size: 1.5rem; font-weight: 600; color: var(--primary); display: flex; align-items: center; gap: 10px; }
+        body { background-color: #f8fafc; color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; }
         
-        nav button { background: none; border: none; padding: 0.5rem 1rem; cursor: pointer; font-weight: 500; color: var(--text); transition: 0.3s; }
-        nav button.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
-
-        main { max-width: 800px; margin: 3rem auto; padding: 0 20px; }
-        .card { background: var(--white); padding: 2.5rem; border-radius: 20px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
-        h2 { margin-bottom: 1.5rem; color: #1e293b; text-align: center; }
-
-        .form-group { margin-bottom: 1rem; }
-        input, select { width: 100%; padding: 0.8rem; border: 1px solid #e2e8f0; border-radius: 10px; }
-        button.btn-submit { width: 100%; background: var(--success); color: white; padding: 1rem; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; margin-top: 1rem; }
+        .login-container { background: var(--white); padding: 3rem; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; width: 100%; max-width: 400px; }
+        h1 { color: var(--primary); margin-bottom: 2rem; }
         
-        .contact-item { display: flex; align-items: center; gap: 10px; margin: 15px 0; justify-content: center; }
-        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-        th, td { padding: 1rem; border-bottom: 1px solid #e2e8f0; text-align: left; }
+        .btn-login { width: 100%; padding: 1rem; margin-top: 1rem; border-radius: 10px; border: none; font-weight: 600; cursor: pointer; transition: 0.3s; }
+        .btn-paciente { background: var(--primary); color: white; }
+        .btn-gestor { background: #e2e8f0; color: var(--text); }
+        .btn-login:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        /* Esconder tudo inicialmente */
+        .view { display: none; }
+        header { background: var(--white); padding: 1.5rem 10%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); width: 100%; position: absolute; top: 0; }
+        .card { background: var(--white); padding: 2.5rem; border-radius: 20px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); margin-top: 5rem; width: 100%; max-width: 600px; }
     </style>
 </head>
 <body>
 
-<header>
-    <div class="logo"><i data-lucide="smile"></i> Sorriso Perfeito</div>
-    <nav>
-        <button id="btnClient" class="active" onclick="switchView('client')">Agendar</button>
-        <button id="btnContact" onclick="switchView('contact')">Contato</button>
-        <button id="btnAdmin" onclick="switchView('admin')">Painel</button>
-    </nav>
-</header>
+<!-- TELA DE LOGIN (Início) -->
+<div id="loginScreen" class="login-container">
+    <h1>Bem-vindo(a)</h1>
+    <p>Como deseja acessar o sistema?</p>
+    <button class="btn-login btn-paciente" onclick="enterAs('client')">Entrar como Paciente</button>
+    <button class="btn-login btn-gestor" onclick="enterAs('admin')">Painel Funcionário/Gestor</button>
+</div>
 
-<main>
-    <!-- Agendamento -->
-    <section id="clientView" class="view">
-        <div class="card">
-            <h2>Agende sua consulta</h2>
-            <form id="appointmentForm" onsubmit="saveAppointment(event)">
-                <div class="form-group"><input type="text" id="clientName" placeholder="Nome Completo" required></div>
-                <div class="form-group"><input type="tel" id="clientPhone" placeholder="Telefone" required></div>
-                <div class="form-group"><select id="procedure"><option>Limpeza</option><option>Clareamento</option><option>Avaliação</option></select></div>
-                <div class="form-group"><input type="date" id="appointmentDate" required></div>
-                <button type="submit" class="btn-submit">Confirmar Agendamento</button>
-            </form>
-        </div>
-    </section>
+<!-- SISTEMA (Escondido até o login) -->
+<div id="appContainer" style="display:none; width: 100%; display: flex; flex-direction: column; align-items: center;">
+    <header>
+        <div class="logo">Sorriso Perfeito</div>
+        <nav><button onclick="location.reload()">Sair</button></nav>
+    </header>
 
-    <!-- Contato -->
-    <section id="contactView" class="view" style="display:none;">
-        <div class="card">
-            <h2>Fale Conosco</h2>
-            <div class="contact-item"><i data-lucide="map-pin"></i> Rua Odonto, 123 - Centro</div>
-            <div class="contact-item"><i data-lucide="phone"></i> (41) 99999-9999</div>
-            <div class="contact-item"><i data-lucide="mail"></i> contato@sorrisoperfeito.com</div>
-        </div>
-    </section>
+    <main style="width: 90%; max-width: 600px;">
+        <!-- Agendamento -->
+        <section id="clientView" class="view">
+            <div class="card">
+                <h2>Agende sua consulta</h2>
+                <form onsubmit="saveAppointment(event)">
+                    <input type="text" id="name" placeholder="Nome" required style="width:100%; padding:10px; margin-bottom:10px;">
+                    <input type="date" id="date" required style="width:100%; padding:10px; margin-bottom:10px;">
+                    <button type="submit" style="width:100%; padding:10px; background:var(--success); color:white; border:none; border-radius:5px;">Confirmar</button>
+                </form>
+            </div>
+        </section>
 
-    <!-- Painel Admin -->
-    <section id="adminView" class="view" style="display:none;">
-        <div class="card">
-            <h2>Painel de Gestão</h2>
-            <table id="adminTable">
-                <thead><tr><th>Paciente</th><th>Procedimento</th><th>Data</th></tr></thead>
-                <tbody id="appointmentTableBody"></tbody>
-            </table>
-        </div>
-    </section>
-</main>
+        <!-- Admin -->
+        <section id="adminView" class="view">
+            <div class="card">
+                <h2>Painel do Gestor</h2>
+                <table id="adminTable" style="width:100%; text-align:left;">
+                    <tbody id="adminBody"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</div>
 
 <script>
-    lucide.createIcons();
-
-    function switchView(view) {
-        if(view === 'admin') {
-            const pass = prompt("Senha do Gestor:");
-            if(pass !== "1234") return alert("Acesso negado");
-            loadAppointments();
+    function enterAs(role) {
+        if (role === 'admin') {
+            const pass = prompt("Digite a senha do funcionário:");
+            if (pass !== "1234") return alert("Senha incorreta!");
+            document.getElementById('adminView').style.display = 'block';
+        } else {
+            document.getElementById('clientView').style.display = 'block';
         }
-        document.querySelectorAll('.view').forEach(v => v.style.display = 'none');
-        document.getElementById(view + 'View').style.display = 'block';
+        
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('appContainer').style.display = 'flex';
+        if(role === 'admin') loadApps();
     }
 
     function saveAppointment(e) {
         e.preventDefault();
-        const app = {
-            name: document.getElementById('clientName').value,
-            proc: document.getElementById('procedure').value,
-            date: document.getElementById('appointmentDate').value
-        };
+        const app = { name: document.getElementById('name').value, date: document.getElementById('date').value };
         let list = JSON.parse(localStorage.getItem('apps') || '[]');
         list.push(app);
         localStorage.setItem('apps', JSON.stringify(list));
-        alert("Agendado com sucesso!");
+        alert("Agendado!");
         e.target.reset();
     }
 
-    function loadAppointments() {
+    function loadApps() {
         const list = JSON.parse(localStorage.getItem('apps') || '[]');
-        const body = document.getElementById('appointmentTableBody');
-        body.innerHTML = list.map(a => `<tr><td>${a.name}</td><td>${a.proc}</td><td>${a.date}</td></tr>`).join('');
+        document.getElementById('adminBody').innerHTML = list.map(a => `<tr><td>${a.name}</td><td>${a.date}</td></tr>`).join('');
     }
 </script>
 </body>
