@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorriso Perfeito - Agendamento Odontológico</title>
+    <style>
+        :root {
+            --primary: #0ea5e9;
+            --primary-dark: #0284c7;
+            --success: #22c55e;
+            --bg: #f8fafc;
+            --text: #1e293b;
+            --white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: var(--white);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .nav-buttons button {
+            background: none;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .nav-buttons button.active, .nav-buttons button:hover {
+            background-color: var(--primary);
+            color: var(--white);
+        }
+
+        main {
+            flex: 1;
+            max-width: 900px;
+            width: 100%;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .view-section {
+            display: none;
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        h2 {
+            margin-bottom: 1.5rem;
+            color: var(--text);
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        button.btn-submit {
+            background-color: var(--success);
+            color: var(--white);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: opacity 0.2s;
+        }
+
+        button.btn-submit:hover {
+            opacity: 0.9;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background-color: #f1f5f9;
+        }
+
+        .badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            background-color: #e0f2fe;
+            color: var(--primary-dark);
+        }
+
+        .btn-delete {
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background: var(--white);
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">🦷 OdontoSystem</div>
+        <div class="nav-buttons">
+            <button id="btnClient" class="active" onclick="switchView('client')">Área do Cliente</button>
+            <button id="btnAdmin" onclick="switchView('admin')">Painel Funcionário/Gestor</button>
+        </div>
+    </header>
+
+    <main>
+        <!-- ÁREA DO CLIENTE -->
+        <section id="clientView" class="view-section active">
+            <h2>Agende sua Consulta Odontológica</h2>
+            <form id="appointmentForm" onsubmit="saveAppointment(event)">
+                <div class="form-group">
+                    <label for="clientName">Nome Completo</label>
+                    <input type="text" id="clientName" required placeholder="Ex: Maria Silva">
+                </div>
+                <div class="form-group">
+                    <label for="clientPhone">Telefone / WhatsApp</label>
+                    <input type="tel" id="clientPhone" required placeholder="(00) 00000-0000">
+                </div>
+                <div class="form-group">
+                    <label for="procedure">Procedimento Desejado</label>
+                    <select id="procedure" required>
+                        <option value="">Selecione...</option>
+                        <option value="Limpeza (Profilaxia)">Limpeza (Profilaxia)</option>
+                        <option value="Clareamento Dental">Clareamento Dental</option>
+                        <option value="Tratamento de Canal">Tratamento de Canal</option>
+                        <option value="Avaliação de Aparelho">Avaliação de Aparelho</option>
+                        <option value="Restauração">Restauração</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="appointmentDate">Data</label>
+                    <input type="date" id="appointmentDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="appointmentTime">Horário</label>
+                    <select id="appointmentTime" required>
+                        <option value="">Selecione...</option>
+                        <option value="08:00">08:00</option>
+                        <option value="09:00">09:00</option>
+                        <option value="10:00">10:00</option>
+                        <option value="11:00">11:00</option>
+                        <option value="13:30">13:30</option>
+                        <option value="14:30">14:30</option>
+                        <option value="15:30">15:30</option>
+                        <option value="16:30">16:30</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-submit">Confirmar Agendamento</button>
+            </form>
+        </section>
+
+        <!-- ÁREA DO ADMINISTRADOR / FUNCIONÁRIO -->
+        <section id="adminView" class="view-section">
+            <h2>Painel de Gestão (Proprietário / Funcionários)</h2>
+            <p>Gerencie abaixo todos os horários e pacientes marcados no consultório.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Paciente</th>
+                        <th>Telefone</th>
+                        <th>Procedimento</th>
+                        <th>Data</th>
+                        <th>Horário</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="appointmentTableBody">
+                    <!-- Os agendamentos aparecerão aqui dinamicamente -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 OdontoSystem - Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+        const ADMIN_PASSWORD = "1234"; // Defina sua senha aqui
+
+        // Alternar entre Visão de Cliente e Admin com Autenticação
+        function switchView(view) {
+            if (view === 'admin') {
+                const password = prompt("Digite a senha do funcionário para acessar o painel:");
+                
+                if (password !== ADMIN_PASSWORD) {
+                    alert("Acesso negado! Senha incorreta.");
+                    return; // Interrompe a troca de visão caso a senha esteja errada
+                }
+            }
+
+            const clientView = document.getElementById('clientView');
+            const adminView = document.getElementById('adminView');
+            const btnClient = document.getElementById('btnClient');
+            const btnAdmin = document.getElementById('btnAdmin');
+
+            if (view === 'client') {
+                clientView.classList.add('active');
+                adminView.classList.remove('active');
+                btnClient.classList.add('active');
+                btnAdmin.classList.remove('active');
+            } else {
+                adminView.classList.add('active');
+                clientView.classList.remove('active');
+                btnAdmin.classList.add('active');
+                btnClient.classList.remove('active');
+                loadAppointments(); // Atualiza a tabela ao abrir o painel
+            }
+        }
+
+        // Salvar Agendamento
+        function saveAppointment(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('clientName').value;
+            const phone = document.getElementById('clientPhone').value;
+            const procedure = document.getElementById('procedure').value;
+            const date = document.getElementById('appointmentDate').value;
+            const time = document.getElementById('appointmentTime').value;
+
+            const newAppointment = {
+                id: Date.now(),
+                name,
+                phone,
+                procedure,
+                date,
+                time
+            };
+
+            // Recupera dados salvos ou cria lista vazia
+            let appointments = JSON.parse(localStorage.getItem('appointments')) || [];
+            appointments.push(newAppointment);
+            localStorage.setItem('appointments', JSON.stringify(appointments));
+
+            alert('Consulta agendada com sucesso!');
+            document.getElementById('appointmentForm').reset();
+        }
+
+        // Carregar Agendamentos no Painel do Funcionário/Proprietário
+        function loadAppointments() {
+            const tbody = document.getElementById('appointmentTableBody');
+            tbody.innerHTML = '';
+
+            let appointments = JSON.parse(localStorage.getItem('appointments')) || [];
+
+            // Ordena por data e hora
+            appointments.sort((a, b) => new Date(`${a.date}T${a.time}`) - new Date(`${b.date}T${b.time}`));
+
+            if (appointments.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #64748b;">Nenhum agendamento encontrado.</td></tr>`;
+                return;
+            }
+
+            appointments.forEach(app => {
+                // Formata data para o padrão brasileiro (DD/MM/AAAA)
+                const [year, month, day] = app.date.split('-');
+                const formattedDate = `${day}/${month}/${year}`;
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${app.name}</strong></td>
+                    <td>${app.phone}</td>
+                    <td><span class="badge">${app.procedure}</span></td>
+                    <td>${formattedDate}</td>
+                    <td>${app.time}</td>
+                    <td><button class="btn-delete" onclick="deleteAppointment(${app.id})">Excluir</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Excluir Agendamento (Ação de Funcionário/Gestor)
+        function deleteAppointment(id) {
+            if (confirm('Tem certeza que deseja cancelar/remover este agendamento?')) {
+                let appointments = JSON.parse(localStorage.getItem('appointments')) || [];
+                appointments = appointments.filter(app => app.id !== id);
+                localStorage.setItem('appointments', JSON.stringify(appointments));
+                loadAppointments();
+            }
+        }
+    </script>
+</body>
+</html>
